@@ -50,7 +50,7 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("insert into players (full_name) values ('%s');" % name)
+    c.execute("insert into players (full_name) values (%s);", (name, ))
     conn.commit()
     conn.close()
 
@@ -68,6 +68,13 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    #haha    return (('1', 'Melpomene Murray', 0, 0), ('2', 'Randy Schwartz', 0, 0))
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT * FROM players ORDER BY wins desc;")
+    current_standings = c.fetchall()
+    return current_standings
+    conn.close()
 
 
 def reportMatch(winner, loser):
@@ -77,6 +84,11 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("insert into players (full_name) values (%s);", (name, ))
+    conn.commit()
+    conn.close()
  
  
 def swissPairings():
@@ -95,4 +107,7 @@ def swissPairings():
         name2: the second player's name
     """
 
+if __name__ == '__main__':
+    countPlayers()
+    print "DONE!"
 
