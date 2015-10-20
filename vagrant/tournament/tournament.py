@@ -50,7 +50,9 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("insert into players (full_name) values (%s);", (name, ))
+    QUERY = "INSERT INTO players (full_name) VALUES (%s);"
+    DATA = (name, )
+    c.execute(QUERY, DATA)
     conn.commit()
     conn.close()
 
@@ -86,7 +88,15 @@ def reportMatch(winner, loser):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("insert into players (full_name) values (%s);", (name, ))
+    updt_win_rcrd = "UPDATE players SET wins = wins+1, matches = matches+1 WHERE id = %s;"
+    WNR = (winner, )
+    c.execute(updt_win_rcrd, WNR)
+    updt_lose_rcrd = "UPDATE players SET matches = matches+1 WHERE id = %s;"
+    LSR = (loser, )
+    c.execute(updt_lose_rcrd, LSR)
+    QUERY = "INSERT INTO matches (win, loss) VALUES (%s, %s);"
+    DATA = (winner, loser)
+    c.execute(QUERY, DATA)
     conn.commit()
     conn.close()
  
@@ -106,6 +116,17 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+#TODO:Pull out all player records to determine closest match in wins column
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT id, full_name, wins FROM players;")
+    = c.fetchall()
+
+#TODO:Sanity check pairings to verify each id appears only once
+#TODO:Return a list of tuples per above
+    return 
+    conn.close()
+#    return [(34, "Jay Leno", 36, "David Letterman"), (33, "Jimmy Fallon", 35, "Jimmy Kimmel")]
 
 if __name__ == '__main__':
     countPlayers()

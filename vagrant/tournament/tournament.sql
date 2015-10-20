@@ -18,8 +18,9 @@ CREATE TABLE players (
     );
 
 CREATE TABLE matches (
-    p1 integer,
-    p2 integer,
-    winner integer,
-    primary key (p1, p2)
+--    p1 integer,
+--    p2 integer,
+    win integer,
+    loss integer,
+    primary key (win, loss)
     );
