@@ -13,17 +13,32 @@ CREATE DATABASE tournament;
 CREATE TABLE players (
     id serial primary key,
     full_name text
--- May be better to separate out the wins and matches data to it's own table
--- or view per 'normalized design' in lesson 4
---    wins integer DEFAULT 0,
---    matches integer DEFAULT 0
     );
 
 CREATE TABLE matches (
 -- Column one will hold the id of the winner
     win integer references players (id),
--- Column one will hold the id of the loser
+-- Column two will hold the id of the loser
     loss integer references players (id),
 -- Players will not play each other twice, so the two player combination will be unique
     primary key (win, loss)
     );
+
+-- idea for a VIEW to provide a win and match records for each player
+-- player records (id, full_name, wins, matches)
+CREATE VIEW plyr_rcrds AS
+    SELECT
+        players.id,
+        players.full_name,
+        count(matches.win) AS wins,
+-- subquery to get the count of players.id from both the win and loss column
+        (SELECT count(*) FROM matches
+            WHERE players.id = matches.win
+            OR players.id = matches.loss) AS matches
+-- left join in case the player has zero wins
+FROM players LEFT JOIN matches
+  ON players.id = matches.win
+  GROUP BY players.id
+-- show most players with most wins at top, then order by id
+  ORDER BY wins DESC, id;
+

@@ -70,10 +70,9 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    #haha    return (('1', 'Melpomene Murray', 0, 0), ('2', 'Randy Schwartz', 0, 0))
     conn = connect()
     c = conn.cursor()
-    c.execute("SELECT * FROM players ORDER BY wins desc;")
+    c.execute("SELECT * FROM plyr_rcrds ORDER BY wins desc;")
     current_standings = c.fetchall()
     return current_standings
     conn.close()
