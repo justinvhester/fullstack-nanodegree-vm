@@ -88,12 +88,6 @@ def reportMatch(winner, loser):
     """
     conn = connect()
     c = conn.cursor()
-    updt_win_rcrd = "UPDATE players SET wins = wins+1, matches = matches+1 WHERE id = %s;"
-    WNR = (winner, )
-    c.execute(updt_win_rcrd, WNR)
-    updt_lose_rcrd = "UPDATE players SET matches = matches+1 WHERE id = %s;"
-    LSR = (loser, )
-    c.execute(updt_lose_rcrd, LSR)
     QUERY = "INSERT INTO matches (win, loss) VALUES (%s, %s);"
     DATA = (winner, loser)
     c.execute(QUERY, DATA)
