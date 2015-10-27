@@ -33,9 +33,11 @@ def countPlayers():
     """Returns the number of players currently registered."""
     conn = connect()
     c = conn.cursor()
-    c.execute("select count(id) from players;")
-    player_count = c.fetchall()
-    return int(player_count[0][0])
+    c.execute("SELECT count(id) FROM players;")
+    player_count = c.fetchone()
+    # fetchone returns a tuple containing a Long int
+    # so slice 0 and pass that to int() before returning
+    return int(player_count[0])
     conn.close()
 
 
