@@ -34,11 +34,11 @@ def countPlayers():
     conn = connect()
     c = conn.cursor()
     c.execute("SELECT count(id) FROM players;")
-    player_count = c.fetchone()
-    # fetchone returns a tuple containing a Long int
-    # so slice 0 and pass that to int() before returning
-    return int(player_count[0])
+    player_count = c.fetchone()[0]
     conn.close()
+    # fetchone returns a tuple containing a Long int
+    # so use index 0 to return just the integer instead of the tuple
+    return player_count
 
 
 def registerPlayer(name):
@@ -76,8 +76,8 @@ def playerStandings():
     c = conn.cursor()
     c.execute("SELECT * FROM plyr_rcrds ORDER BY wins desc;")
     current_standings = c.fetchall()
-    return current_standings
     conn.close()
+    return current_standings
 
 
 def reportMatch(winner, loser):
