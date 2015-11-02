@@ -1,20 +1,17 @@
 -- Table definitions for the tournament project.
---
--- Put your SQL 'create table' statements in this file; also 'create view'
--- statements if you choose to use it.
---
--- You can write comments in this file by starting them with two dashes, like
--- these lines here.
 
+-- Create the database and connect to it
 CREATE DATABASE tournament;
 
 \c tournament
 
+-- Create the players table, storing only a unique ID and full_name
 CREATE TABLE players (
     id serial primary key,
     full_name text
     );
 
+-- Create the matches table to record results of all matches
 CREATE TABLE matches (
 -- Column one will hold the id of the winner
     win integer references players (id),
@@ -24,8 +21,7 @@ CREATE TABLE matches (
     primary key (win, loss)
     );
 
--- idea for a VIEW to provide a win and match records for each player
--- player records (id, full_name, wins, matches)
+-- Create a view to provide player records (id, full_name, wins, matches)
 CREATE VIEW plyr_rcrds AS
     SELECT
         players.id,
@@ -35,10 +31,11 @@ CREATE VIEW plyr_rcrds AS
         (SELECT count(*) FROM matches
             WHERE players.id = matches.win
             OR players.id = matches.loss) AS matches
--- left join in case the player has zero wins
-FROM players LEFT JOIN matches
-  ON players.id = matches.win
-  GROUP BY players.id
+-- left join in case the player has zero wins, still want to return 0
+    FROM players LEFT JOIN matches
+    ON players.id = matches.win
+    GROUP BY players.id
 -- show most players with most wins at top, then order by id
-  ORDER BY wins DESC, id;
+    ORDER BY wins DESC, id;
+
 

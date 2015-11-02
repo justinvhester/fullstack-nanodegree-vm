@@ -15,6 +15,7 @@ def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
     c = conn.cursor()
+    # DELETE FROM <table_name> will remove all rows
     c.execute("DELETE FROM matches;")
     conn.commit()
     conn.close()
@@ -34,10 +35,10 @@ def countPlayers():
     conn = connect()
     c = conn.cursor()
     c.execute("SELECT count(id) FROM players;")
+    # fetchone() returns a tuple containing a Long int
+    # Use index 0 to return just the integer instead of the tuple
     player_count = c.fetchone()[0]
     conn.close()
-    # fetchone returns a tuple containing a Long int
-    # so use index 0 to return just the integer instead of the tuple
     return player_count
 
 
@@ -52,8 +53,11 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
+    # Define the SQL query to add a record to the players table
     QUERY = "INSERT INTO players (full_name) VALUES (%s);"
+    # Define second argument passed to execute(), which must be a tuple
     DATA = (name, )
+    # Second arg "DATA" will replace the %s inside of QUERY
     c.execute(QUERY, DATA)
     conn.commit()
     conn.close()
@@ -74,7 +78,8 @@ def playerStandings():
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("SELECT * FROM plyr_rcrds ORDER BY wins desc;")
+    # Use results of plyr_rcrds view to retrieve the information
+    c.execute("SELECT * FROM plyr_rcrds")
     current_standings = c.fetchall()
     conn.close()
     return current_standings
