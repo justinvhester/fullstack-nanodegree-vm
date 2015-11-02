@@ -116,19 +116,17 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-#TODO:Pull out all player records to determine closest match in wins column
-    conn = connect()
-    c = conn.cursor()
-    c.execute("SELECT id, full_name, wins FROM players;")
-    = c.fetchall()
+    stnds = playerStandings()
+    pCount = countPlayers()
+    # List comprehension will create a list of tuples each containing
+    # info of the 'next two' players from the stnds list
+    #On the first loop through stnds[0] is the top rated player
+    pairs =  [(stnds[pInfo][0], stnds[pInfo][1],
+               #add 1 to the index of stnds to get the very next player
+               stnds[pInfo + 1][0], stnds[pInfo + 1][1])
+             # Loop through only the number of currently registered
+             # players, and only for even numbers coming out of xrange
+             for pInfo in xrange(pCount) if pInfo%2 == 0 ]
+    return pairs
 
-#TODO:Sanity check pairings to verify each id appears only once
-#TODO:Return a list of tuples per above
-    return 
-    conn.close()
-#    return [(34, "Jay Leno", 36, "David Letterman"), (33, "Jimmy Fallon", 35, "Jimmy Kimmel")]
-
-if __name__ == '__main__':
-    countPlayers()
-    print "DONE!"
 
