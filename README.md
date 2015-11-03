@@ -5,51 +5,73 @@ Common code for the Relational Databases and Full Stack Fundamentals courses
 
 # Swiss Pairings Engine
 A Python module for tournament management using [Swiss-system tournament management][1].
-
 [1]:https://en.wikipedia.org/wiki/Swiss-system_tournament
+The engine runs inside of a VirtualBox guest setup with Vagrant.
+
+
 ## Install and Setup
 
-### The easy way
+Meet these dependencies first on your host machine:
+- [Vagrant 1.7.4][2]
+- [VirtualBox 5.0][3]
+[2]:https://www.vagrantup.com/
+[3]:https://www.virtualbox.org/
 
-Vagrant makes life easy if you wish to use the Swiss Pairings Engine.
-If you have Vagrant and VirtualBox already setup.
+1. Clone this repo and cd into the local repo directory.
+  * `git clone https://github.com/justinvhester/vm-fullstack-nanodegree`
+  * `cd vm-fullstack-nanodegree`
+2. Start the virtual machine using Vagrant.
+  * `vagrantup`
+3. Connect to a terminal session on the virtual machine using Vagrant.
+  * `vagrant ssh`
+4. Change into the shared vagrant/tournament directory.
+  * `cd /vagrant/tournament`
+    * This directory contains the code for the tournament engine.
+5. Connect to the database and run the tournament.sql file to setup the database.
+  * `psql`
+    * NOTE: this will change the prompt from bash to `vagrant=>`
+  * `\i tournament.sql`
 
-1. `git clone https://github.com/justinvhester/vm-fullstack-nanodegree`
-2. `cd vm-fullstack-nanodegree/vagrant/tournament`
-3. `vagrantup`
-  * Start the virtual machine. The first time may take longer than usual.
-4. `vagrant ssh`
-  * This will connect to a terminal on the virtual machine.
-5. `cd /vagrant/tournament`
-  * This directory contains the code for the tournament engine.
-5. `psql tournament.sql`
-
-
-### The hard way
-
-1. Meet the dependencies
-2. Place the two files in
-  * To operate the engine you only need a pair of files from the `/vagrant/tournament` directory.
-
-Because the code needed to operate the engine can be found in a pair of text files, you could (in theory) just copy those two files from '/vagrant/tournament' onto your system that meets the dependencies and requirements listed below.
-
-#### Dependencies
--Python 2.6+
--Postgresql 9.0+
--`psql` command line tool
---A Database already setup to use credentials necessary for the tournament.sql file.
+At this point the database and virtual machine is ready for use.
+NOTE: Use `\q` to disconnect from the psql prompt.
 
 ## Usage
-Currently there is no GUI interface.
-However the functions defined in tournament.py are usable from the python prompt.
+
+Functions defined in tournament.py can be called from a python prompt.
+Once you're connected using `vagrant ssh` and inside the /vagrant/tournament directory the following example demonstrates some of the functions.
+
 ```python
 >>> from tournament import *
 >>> countPlayers()
+0L
+>>> registerPlayer('Alice')
+>>> registerPlayer('Bob')
+>>> registerPlayer('Cathy')
+>>> registerPlayer("Danny O'Hare")
+>>> countPlayers()
 4L
->>>
 ```
-This assumes you are in an ssh session with the VM 
 
+Once all participants are registered swissPairings() will give you a list of pairs for round one.
+```python
+>>> swissPairings()
+[(398, 'Alice', 399, 'Bob'), (400, 'Cathy', 401, "Danny O'Hare")]
+```
+After the first round is over, report the results to the database with reportMatch().
+This function takes two arguments; the first is the player id of the winner,
+the second is the player id of the loser for that round.
+
+Assuming Alice and Cathy won their first round games:
+```python
+>>> reportMatch(398, 399)
+>>> reportMatch(400, 401)
+```
+
+You can then get the current standings of all registered players with playerStandings().
+```python
+>>>playerStandings()
+[(398, 'Alice', 1L, 1L), (400, 'Cathy', 1L, 1L), (399, 'Bob', 0L, 1L), (401, "Danny O'Hare", 0L, 1L)]
+```
 
 ## Known issues
 ### Rematches
