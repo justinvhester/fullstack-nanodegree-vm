@@ -38,4 +38,16 @@ CREATE VIEW plyr_rcrds AS
 -- show most players with most wins at top, then order by id
     ORDER BY wins DESC, id;
 
+CREATE VIEW possible_matches AS
+SELECT * FROM 
+ (SELECT a.id as id_one, 
+         b.id as id_two 
+  FROM players a 
+   INNER JOIN players b ON a.id != b.id) as p 
+WHERE NOT EXISTS 
+  (SELECT 1 FROM matches m 
+    WHERE 
+      (p.id_one = m.win AND p.id_two = m.loss) OR 
+      (p.id_two = m.win AND p.id_one = m.loss)
+  );
 
