@@ -118,6 +118,11 @@ def swissPairings():
     """
     stnds = playerStandings()
     pCount = countPlayers()
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT * FROM possible_matches;")
+    psblMtchs = c.fetchall()
+    conn.close()
     # List comprehension will create a list of tuples each containing
     # info of the 'next two' players from the stnds list
     #On the first loop through stnds[0] is the top rated player
@@ -127,6 +132,8 @@ def swissPairings():
              # Loop through only the number of currently registered
              # players, and only for even numbers coming out of xrange
              for pInfo in xrange(pCount) if pInfo%2 == 0 ]
+    #TODO: break list comprehension up into smaller steps so checking
+    # psblMtchs for an available pair is easier to do before adding the tuple to pairs.
     return pairs
 
 
