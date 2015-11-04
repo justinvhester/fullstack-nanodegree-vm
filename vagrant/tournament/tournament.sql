@@ -16,9 +16,7 @@ CREATE TABLE matches (
 -- Column one will hold the id of the winner
     win integer references players (id),
 -- Column two will hold the id of the loser
-    loss integer references players (id),
--- Players will not play each other twice, so the two player combination will be unique
-    primary key (win, loss)
+    loss integer references players (id)
     );
 
 -- Create a view to provide player records (id, full_name, wins, matches)
